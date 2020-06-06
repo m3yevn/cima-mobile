@@ -1,6 +1,14 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
-import { Layout, Input, Icon, Text, Button } from "@ui-kitten/components";
+import {
+  Layout,
+  Input,
+  Icon,
+  Text,
+  Button,
+  Select,
+  SelectItem,
+} from "@ui-kitten/components";
 import { MainTheme } from "../theme";
 import { Action } from "../models/Action";
 import { UserReducerType } from "../constants/Types";
@@ -9,8 +17,6 @@ import { LogoImage } from "../components/LogoImage";
 import { EmailRegex } from "../constants/Regex";
 import { signIn } from "../utils/AuthService";
 import { User } from "../models/User";
-import { useSelector } from "../utils/redux/Store";
-import { ActivationModalInjector } from "../components/ModalActivation";
 
 const initialUser: User = { email: "", password: "" };
 
@@ -122,7 +128,6 @@ export const LoginScreen = ({ navigation }: any) => {
       signIn(user.email, user.password);
     }
   };
-
 
   return (
     <Layout style={MainTheme.LayoutTheme.container}>

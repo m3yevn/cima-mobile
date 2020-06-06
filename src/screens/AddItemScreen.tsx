@@ -10,14 +10,13 @@ import { firebase } from "@react-native-firebase/auth";
 import { cameraImage } from "../constants/Image";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import storage from "@react-native-firebase/storage";
-import { v4 } from "react-native-uuid";
 
 const newItem = {} as Item;
 const options = {
   title: "Select option",
   storageOptions: {
     skipBackup: true,
-    path: "Penta Ocean",
+    path: "CIMA",
   },
 };
 
@@ -33,7 +32,7 @@ export const AddItemScreen = ({ navigation }: any) => {
 
   const storeImage = () => {
     return new Promise((resolve, reject) => {
-      const reference = storage().ref(`${v4()}_penta_item_image.png`);
+      const reference = storage().ref(`_penta_item_image.png`);
       const pathToFile = item.imageUrl.split("///")[1];
       reference
         .putFile(pathToFile)
