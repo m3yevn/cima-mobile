@@ -5,7 +5,7 @@ export interface Item {
   itemName: string;
   test: boolean;
   cost: number;
-  testStatus: string;
+  testStatus: string | null;
   description: string;
   imageUrl: string;
   weight: number;

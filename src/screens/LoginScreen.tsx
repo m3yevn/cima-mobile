@@ -17,6 +17,7 @@ import { LogoImage } from "../components/LogoImage";
 import { EmailRegex } from "../constants/Regex";
 import { signIn } from "../utils/AuthService";
 import { User } from "../models/User";
+import { useSelector } from "../utils/redux/Store";
 
 const initialUser: User = { email: "", password: "" };
 
@@ -47,6 +48,7 @@ export const LoginScreen = ({ navigation }: any) => {
   const [error, dispatchError] = useReducer(errorReducer, initialUser);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+  const globalError = useSelector((state) => state.globalError);
 
   const renderSpinner = () => (
     <>
@@ -129,19 +131,24 @@ export const LoginScreen = ({ navigation }: any) => {
     }
   };
 
+  useEffect(() => {
+    if(globalError.name) {
+      setLoading(false);
+    }
+  },[globalError.name])
+
   return (
     <Layout style={MainTheme.LayoutTheme.container}>
       <Layout>
         <LogoImage width={100} height={100} padding={10} fontSize={35} />
         <Input
-          style={{ marginTop: 20, ...MainTheme.LayoutTheme.width_90 }}
+          style={{ marginTop: 20 }}
           placeholder="Email"
           value={user.email}
           onChangeText={handleEmailChange}
         />
         <Text style={MainTheme.TextTheme.textDanger}>{error.email}</Text>
         <Input
-          style={MainTheme.LayoutTheme.width_90}
           secureTextEntry={secureTextEntry}
           accessoryRight={renderIcon}
           placeholder="Password"
@@ -151,7 +158,7 @@ export const LoginScreen = ({ navigation }: any) => {
         <Text style={MainTheme.TextTheme.textDanger}>{error.password}</Text>
         <Button
           disabled={loading}
-          style={{ marginTop: 15 }}
+          style={{ marginTop: 20 }}
           onPress={handleLogin}
         >
           {renderSpinner}
