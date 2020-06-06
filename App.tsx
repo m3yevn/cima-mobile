@@ -9,19 +9,27 @@ import { LoginScreen } from "./src/screens/LoginScreen";
 import { default as Colors } from "./src/theme/Colors.json";
 import { checkPreviousSession } from "./src/utils/helpers/SessionHelper";
 import { LogoutScreen } from "./src/screens/LogoutScreen";
-import auth from '@react-native-firebase/auth';
+import auth from "@react-native-firebase/auth";
 import { AddItemScreen } from "./src/screens/AddItemScreen";
+import { useSelector, Store } from "./src/utils/redux/Store";
+import { SuccessModalInjector } from "./src/components/ModalSuccess";
+import { ErrorModalInjector } from "./src/components/ModalError";
+import { Provider } from "react-redux";
 
 const Stack = createStackNavigator();
 
 function RootStack() {
   checkPreviousSession();
+  const error = useSelector((state) => state.globalError);
+  const success = useSelector((state) => state.globalSuccess);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const onAuthStateChanged = (user:any) => {
-    if(user){
-    setIsAuthenticated(true);
+  const onAuthStateChanged = (user: any) => {
+    if (user) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
     }
-  }
+  };
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -31,6 +39,12 @@ function RootStack() {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
+      {!!success && !!success.name && (
+        <SuccessModalInjector title={success.name} message={success.message} />
+      )}
+      {!!error && !!error.name && (
+        <ErrorModalInjector title={error.name} message={error.message} />
+      )}
       <ApplicationProvider {...eva} theme={{ ...eva.light, ...Colors }}>
         <NavigationContainer>
           <Stack.Navigator
@@ -59,7 +73,9 @@ function RootStack() {
 export class App extends React.Component {
   render() {
     return (
+      <Provider store={Store}>
         <RootStack />
+      </Provider>
     );
   }
 }

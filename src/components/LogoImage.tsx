@@ -2,6 +2,7 @@ import React from "react";
 import { Image } from "react-native";
 import { Layout, Text } from "@ui-kitten/components";
 import { default as Colors } from "../theme/Colors.json";
+import { logoImage } from "../constants/Image";
 
 export const LogoImage = ({ width, height, padding, fontSize }: any) => {
   return (
@@ -13,7 +14,7 @@ export const LogoImage = ({ width, height, padding, fontSize }: any) => {
         flexDirection: "column",
       }}
     >
-      <Image style={{ width, height }} source={{uri:"https://media.glassdoor.com/sql/8255/penta-ocean-construction-squarelogo-1461160203658.png"}} />
+      <Image style={{ width, height }} source={{ uri: require("../assets/logo.png") }} />
       <Layout style={{ flexDirection: "row" }}>
         <Text style={{ fontSize, fontWeight: "bold" }}>Penta</Text>
         <Text

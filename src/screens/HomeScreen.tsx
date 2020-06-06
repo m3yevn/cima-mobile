@@ -1,28 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Text, List, Card, Button } from "@ui-kitten/components";
+import { Text, List, Card, Button, Spinner, Icon } from "@ui-kitten/components";
 import { MainTheme } from "../theme";
-import { getItems, itemCollection } from "../utils/ItemService";
+import { getItems } from "../utils/ItemService";
 import { View, Image } from "react-native";
 import { Header } from "../components/Header";
-import { ScrollView } from "react-native-gesture-handler";
+import { logoImage } from "../constants/Image";
+import { Item } from "../models/Item";
 
 export const HomeScreen = ({ navigation }: any) => {
-  const [items, setItems] = useState<any>([]);
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getItems().then((result) => {
-      setItems(result);
-    });
+    setLoading(true);
+    getItems()
+      .then((result) => {
+        setItems(result);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  const renderItem = ({ item, index }: any) => (
+  interface IRenderItem {
+    item: Item;
+    index: number;
+  }
+
+  const renderItem = ({ item, index }: IRenderItem) => (
     <Card>
-      <View>
-        <Image
-          style={{ width: 50, height: 50 }}
-          source={{ uri: item.imageUrl || require("../assets/logo.png") }}
-        />
-        <Text>{item.itemName}</Text>
+      <View style={{ flexDirection: "row" }}>
+        <View style={{ paddingHorizontal: 10 }}>
+          <Image
+            style={{ width: 50, height: 50 }}
+            source={{ uri: !!item.imageUrl ? item.imageUrl : logoImage }}
+          />
+          <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+            {item.itemName}
+          </Text>
+          <Text style={{ fontWeight: "100", color: "gray" }}>
+            {item.date}
+          </Text>
+        </View>
+        <View style={{ right: 5, position: "absolute", width: "60%" }}>
+          <Text style={{ textAlign: "right" }}>${item.cost} SGD</Text>
+          <Text style={{ textAlign: "right" }}>{item.description}</Text>
+          <Text style={{ textAlign: "right" }}>Shape: {item.shape}</Text>
+          <Text style={{ textAlign: "right" }}>
+            Need Test?: {item.test ? "Yes" : "No"}
+          </Text>
+          <Text
+            style={{
+              textAlign: "right",
+              color: !item.testStatus
+                ? "lightgray"
+                : item.testStatus === "Pass"
+                ? "green"
+                : "red",
+            }}
+          >
+            Status: {item.testStatus || "----"}
+          </Text>
+        </View>
       </View>
     </Card>
   );
@@ -30,26 +69,26 @@ export const HomeScreen = ({ navigation }: any) => {
   return (
     <>
       <Header title="Home" />
-      <ScrollView>
-        {items && !!items.length && (
-          <List
-            style={{ height: "86%" }}
-            data={items}
-            renderItem={renderItem}
-          />
+      <View style={{ minHeight: "86%", ...MainTheme.LayoutTheme.container }}>
+        {loading && <Spinner size="giant" />}
+        {!loading && (
+          <>
+            {items && !!items.length && (
+              <List
+                style={{ height: "86%", width: "98%" }}
+                data={items}
+                renderItem={renderItem}
+              />
+            )}
+            {!items.length && <Text>No items</Text>}
+          </>
         )}
-        {!items.length && (
-          <Layout
-            style={{ minHeight: "86%", ...MainTheme.LayoutTheme.container }}
-          >
-            <Text>No items</Text>
-          </Layout>
-        )}
-      </ScrollView>
+      </View>
       <Button
         onPress={() => {
           navigation.navigate("AddItem");
         }}
+        accessoryLeft={(props) => <Icon {...props} name="plus" />}
       >
         Add Item
       </Button>
