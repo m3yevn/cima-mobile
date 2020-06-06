@@ -1,0 +1,7 @@
+node_modules
+yarn.lock
+android/app/build
+android/.gradle
+ios/Pods
+.env
+.env.prod
