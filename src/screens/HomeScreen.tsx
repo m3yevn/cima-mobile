@@ -19,9 +19,9 @@ export const HomeScreen = ({ navigation }: any) => {
 
   switch (role) {
     case UserLoginType.Cima:
-      return <CimaHomeScreen />;
+      return <CimaHomeScreen navigation={navigation} />;
     case UserLoginType.Lab:
-      return <LabHomeScreen />;
+      return <LabHomeScreen navigation={navigation} />;
     default:
       return <></>;
   }

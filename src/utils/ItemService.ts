@@ -1,5 +1,8 @@
 import firestore from "@react-native-firebase/firestore";
 import { Item } from "../models/Item";
+import { Store } from "./redux/Store";
+import { GLOBAL_ERROR } from "./redux/actions/Types";
+import { GlobalError } from "../models/Error";
 
 export const itemCollection = firestore().collection("ITEM_RECORDS");
 
@@ -31,6 +34,25 @@ export const getTestItems = async () => {
     } as Item);
   });
   return items;
+};
+
+export const deleteItem = (id: string) => {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection("ITEM_RECORDS")
+      .doc(id)
+      .delete()
+      .then(() => {
+        resolve();
+      })
+      .catch(() => {
+        Store.dispatch({
+          type: GLOBAL_ERROR,
+          payload: new GlobalError(500, "Delete Failed"),
+        });
+        reject();
+      });
+  });
 };
 
 export const addItem = async (item: Item) => {

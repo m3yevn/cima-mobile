@@ -7,7 +7,6 @@ import { Item } from "../models/Item";
 import { Dimensions, Text, Image } from "react-native";
 import ImagePicker from "react-native-image-picker";
 import { firebase } from "@react-native-firebase/auth";
-import { cameraImage } from "../constants/Image";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import storage from "@react-native-firebase/storage";
 
@@ -25,7 +24,7 @@ export const AddItemScreen = ({ navigation }: any) => {
   const [item, setItem] = useState(newItem);
 
   const handleAddItem = async () => {
-    const imageUrl = await storeImage();
+    const imageUrl = await storeImage() as string;
     addItem({ ...item, imageUrl });
     clearInput();
   };
@@ -37,7 +36,7 @@ export const AddItemScreen = ({ navigation }: any) => {
       reference
         .putFile(pathToFile)
         .then((response) => {
-          resolve(response.ref);
+          resolve(response.ref.toString());
         })
         .catch(() => {
           reject();
@@ -87,7 +86,11 @@ export const AddItemScreen = ({ navigation }: any) => {
         <TouchableOpacity onPress={handleImagePicker}>
           <Image
             style={{ width: 150, height: 150 }}
-            source={{ uri: item.imageUrl || cameraImage }}
+            source={
+              item.imageUrl
+                ? { uri: item.imageUrl }
+                : require("../assets/camera.png")
+            }
           />
         </TouchableOpacity>
         <Input
