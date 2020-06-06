@@ -5,7 +5,7 @@ import { signOut } from "../utils/AuthService";
 
 export const Header = ({ title, back, navigation }: any) => {
   const backToPrevious = () => {
-    navigation.goBack();
+    navigation.navigate("Home");
   };
   return (
     <View

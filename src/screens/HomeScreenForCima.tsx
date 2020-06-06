@@ -6,9 +6,10 @@ import { View, Image, Text } from "react-native";
 import { Header } from "../components/Header";
 import { MainTheme } from "../theme";
 import Swiper from "react-native-swiper";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSelector } from "../utils/redux/Store";
 
 export const CimaHomeScreen = ({ navigation }: any) => {
+  const success = useSelector((state) => state.globalSuccess.name);
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,35 +22,37 @@ export const CimaHomeScreen = ({ navigation }: any) => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [success]);
 
   interface IRenderItem {
     item: Item;
     index: number;
   }
 
-  const handleDeleteItem = (id: string) => {
+  const handleDeleteItem = (id: string, fileName: string) => {
     setLoading(true);
-    deleteItem(id).then(() => {
-      const poppedItems = items.filter((value) => {
-        return value.id != id;
+    deleteItem(id, fileName)
+      .then(() => {
+        const poppedItems = items.filter((value) => {
+          return value.id != id;
+        });
+        setItems(poppedItems);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-      setItems(poppedItems);
-    }).finally(() => {
-      setLoading(false);
-    });
   };
 
   const renderItem = ({ item, index }: IRenderItem) => (
-    <Swiper  style={{ height: 130 }} showsPagination={false} loop={false}>
+    <Swiper style={{ height: 130 }} showsPagination={false} loop={false}>
       <Card>
         <View style={{ flexDirection: "row" }}>
           <View style={{ paddingHorizontal: 10 }}>
             <Image
               style={{ width: 50, height: 50 }}
               source={
-                !!item.imageUrl
-                  ? { uri: item.imageUrl }
+                !!item.image && !!item.image.imageUrl
+                  ? { uri: item.image.imageUrl }
                   : require("../assets/logo.png")
               }
             />
@@ -63,9 +66,11 @@ export const CimaHomeScreen = ({ navigation }: any) => {
           <View style={{ right: 5, position: "absolute", width: "60%" }}>
             <Text style={{ textAlign: "right" }}>${item.cost} SGD</Text>
             <Text style={{ textAlign: "right" }}>{item.description}</Text>
-            <Text style={{ textAlign: "right" }}>Shape: {item.shape}</Text>
             <Text style={{ textAlign: "right" }}>
-              Need Test?: {item.test ? "Yes" : "No"}
+              Shape : {item?.shape?.toLocaleUpperCase()}
+            </Text>
+            <Text style={{ textAlign: "right" }}>
+              Test needed? : {item.test ? "Yes" : "No"}
             </Text>
             <Text
               style={{
@@ -95,7 +100,7 @@ export const CimaHomeScreen = ({ navigation }: any) => {
           style={{ height: 126, width: "50%" }}
           accessoryRight={(props) => <Icon {...props} name="trash" />}
           onPress={() => {
-            handleDeleteItem(item.id);
+            handleDeleteItem(item.id, item.image.fileName);
           }}
         >
           Delete this?

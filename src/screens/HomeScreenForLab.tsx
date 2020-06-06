@@ -33,8 +33,8 @@ export const LabHomeScreen = ({ navigation }: any) => {
           <Image
             style={{ width: 50, height: 50 }}
             source={
-              !!item.imageUrl
-                ? { uri: item.imageUrl }
+              !!item.image && !!item.image.imageUrl
+                ? { uri: item.image.imageUrl }
                 : require("../assets/logo.png")
             }
           />

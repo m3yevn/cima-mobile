@@ -1,8 +1,10 @@
 import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 import { Item } from "../models/Item";
 import { Store } from "./redux/Store";
-import { GLOBAL_ERROR } from "./redux/actions/Types";
+import { GLOBAL_ERROR, GLOBAL_SUCCESS } from "./redux/actions/Types";
 import { GlobalError } from "../models/Error";
+import { GlobalSuccess } from "../models/Success";
 
 export const itemCollection = firestore().collection("ITEM_RECORDS");
 
@@ -36,8 +38,9 @@ export const getTestItems = async () => {
   return items;
 };
 
-export const deleteItem = (id: string) => {
-  return new Promise((resolve, reject) => {
+export const deleteItem = (id: string, imageName: string) => {
+  return new Promise(async (resolve, reject) => {
+    await storage().ref(imageName).delete();
     firestore()
       .collection("ITEM_RECORDS")
       .doc(id)
@@ -56,9 +59,23 @@ export const deleteItem = (id: string) => {
 };
 
 export const addItem = async (item: Item) => {
-  if (item.shape === "cube" && item.weight > 10) {
-    item.test = true;
-    item.testStatus = null;
-  }
-  firestore().collection("ITEM_RECORDS").add(item);
+  return new Promise((resolve, reject) => {
+    if (item.shape === "cube" && item.weight > 10) {
+      item.test = true;
+      item.testStatus = null;
+    }
+    firestore()
+      .collection("ITEM_RECORDS")
+      .add(item)
+      .then((result) => {
+        Store.dispatch({
+          type: GLOBAL_SUCCESS,
+          payload: new GlobalSuccess(200, "Success", "Item is added"),
+        });
+        resolve();
+      })
+      .catch(() => {
+        reject();
+      });
+  });
 };

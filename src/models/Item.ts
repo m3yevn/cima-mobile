@@ -1,4 +1,5 @@
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
+import { FirebaseImageType } from "./Image";
 
 export interface Item {
   id: string;
@@ -7,7 +8,7 @@ export interface Item {
   cost: number;
   testStatus: string | null;
   description: string;
-  imageUrl: string;
+  image: FirebaseImageType;
   weight: number;
   shape: string;
   date: string;
