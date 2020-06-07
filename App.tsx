@@ -47,10 +47,7 @@ function RootStack() {
       )}
       <ApplicationProvider {...eva} theme={{ ...eva.light, ...Colors }}>
         <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName={isAuthenticated ? "Home" : "Login"}
-            headerMode="none"
-          >
+          <Stack.Navigator headerMode="none">
             {isAuthenticated && (
               <>
                 <Stack.Screen name="Home" component={HomeScreen} />
