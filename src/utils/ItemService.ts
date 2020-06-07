@@ -43,15 +43,17 @@ export const getTestItems = async () => {
     .collection("ITEM_RECORDS")
     .where("test", "==", true)
     .where("shape", "==", "cube")
-    .where("testStatus", "==", null)
     .get();
   const items: any[] = [];
   itemRecords.docs.forEach((doc) => {
-    items.push({
-      ...doc.data(),
-      id: doc.id,
-      date: (doc.data()["createDate"].toDate() as Date).toDateString(),
-    } as Item);
+    console.log(doc.data()["testStatus"]);
+    if (doc.data()["testStatus"] === null) {
+      items.push({
+        ...doc.data(),
+        id: doc.id,
+        date: (doc.data()["createDate"].toDate() as Date).toDateString(),
+      } as Item);
+    }
   });
   return items;
 };

@@ -7,6 +7,7 @@ import { Header } from "../components/Header";
 import { MainTheme } from "../theme";
 import Swiper from "react-native-swiper";
 import { useSelector } from "../utils/redux/Store";
+import { popupError } from "../utils/PopupService";
 
 export const CimaHomeScreen = ({ navigation }: any) => {
   const success = useSelector((state) => state.globalSuccess.name);
@@ -22,7 +23,7 @@ export const CimaHomeScreen = ({ navigation }: any) => {
       .finally(() => {
         setLoading(false);
       });
-  }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -54,9 +55,22 @@ export const CimaHomeScreen = ({ navigation }: any) => {
       });
   };
 
+  const handleItemDetail = (item: Item) => {
+    if (item.testStatus) {
+      popupError(
+        "Restricted",
+        "Item is already tested.\r\nUnable to make changes.\r\nPlease contact service desk at \r\n+65 97330256"
+      );
+      return;
+    }
+    navigation.navigate("ItemDetailScreenForCima", {
+      item,
+    });
+  };
+
   const renderItem = ({ item, index }: IRenderItem) => (
     <Swiper style={{ height: 130 }} showsPagination={false} loop={false}>
-      <Card>
+      <Card onPress={() => handleItemDetail(item)}>
         <View style={{ flexDirection: "row" }}>
           <View style={{ paddingHorizontal: 10 }}>
             <Image

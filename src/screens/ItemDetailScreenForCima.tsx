@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Input, Button, Datepicker } from "@ui-kitten/components";
 import { MainTheme } from "../theme";
-import { addItem } from "../utils/ItemService";
+import { addItem, saveItems } from "../utils/ItemService";
 import { Header } from "../components/Header";
 import { Item } from "../models/Item";
 import { Dimensions, Text, Image, Platform } from "react-native";
@@ -10,9 +10,8 @@ import { firebase } from "@react-native-firebase/auth";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import storage from "@react-native-firebase/storage";
 import { ImageType, FirebaseImageType } from "../models/Image";
+import { useSelector } from "../utils/redux/Store";
 
-const newItem = { cost: 0, weight: 0, shape: "cube" } as Item;
-const newImage = {} as ImageType;
 const options = {
   title: "Select option",
   storageOptions: {
@@ -21,18 +20,24 @@ const options = {
   },
 };
 
-export const ItemDetailScreenForCima = ({ navigation }: any) => {
+export const ItemDetailScreenForCima = ({ navigation, route }: any) => {
+  const thisItem = route.params.item;
+  const thisImage = route.params.item.image;
   const [date, setDate] = useState(new Date());
-  const [item, setItem] = useState(newItem);
-  const [image, setImage] = useState(newImage);
+  const [item, setItem] = useState(thisItem as Item);
+  const [image, setImage] = useState(thisImage);
+  const [imageChange, setImageChange] = useState(false);
   const [loading, setLoading] = useState(false);
   const [disableButton, setDisableButton] = useState(true);
 
-  const handleAddItem = async () => {
+  const handleSaveItem = async () => {
     setLoading(true);
-    const imageUrl = (await storeImage()) as string;
-    await addItem({ ...item, image: { ...item.image, imageUrl } });
-    clearInput();
+    if (imageChange) {
+      const imageUrl = (await storeImage()) as string;
+      await saveItems({ ...item, image: { ...item.image, imageUrl } });
+    } else {
+      await saveItems({ ...item, shape: item.shape.toLocaleLowerCase() });
+    }
     setLoading(false);
   };
 
@@ -40,18 +45,12 @@ export const ItemDetailScreenForCima = ({ navigation }: any) => {
     return new Promise((resolve, reject) => {
       const reference = storage().ref(image.fileName);
       const pathToFile = image.path;
-      reference.putFile(pathToFile).then((result) => {
+      reference.put(pathToFile).then((result) => {
         console.log(result);
         console.log(reference.getDownloadURL());
         resolve(reference.getDownloadURL());
       });
     });
-  };
-
-  const clearInput = () => {
-    setItem(newItem);
-    setImage(newImage);
-    setDate(new Date());
   };
 
   const handleItemChange = (value: any, key: string) => {
@@ -97,13 +96,14 @@ export const ItemDetailScreenForCima = ({ navigation }: any) => {
           } as FirebaseImageType,
           "image"
         );
+        setImageChange(true);
       }
     });
   };
 
   return (
     <>
-      <Header navigation={navigation} back title="Add Item" />
+      <Header navigation={navigation} back title="Edit Item" />
       <Layout
         style={{
           flex: 1,
@@ -186,9 +186,9 @@ export const ItemDetailScreenForCima = ({ navigation }: any) => {
             <Button
               disabled={disableButton || loading}
               style={{ width: "45%", marginHorizontal: "2%" }}
-              onPress={handleAddItem}
+              onPress={handleSaveItem}
             >
-              {loading ? "Adding..." : "Add"}
+              {loading ? "Saving..." : "Save"}
             </Button>
             <Button
               onPress={() => navigation.navigate("Home")}

@@ -36,7 +36,9 @@ export const SuccessModalInjector = ({ title, message }: any) => {
               ...MainTheme.ComponentTheme.backgroundSuccess,
               ...MainTheme.ComponentTheme.borderSuccess,
             }}
-            onPress={() => clearSuccess()}
+            onPress={() => {
+              clearSuccess();
+            }}
           >
             OK
           </Button>
