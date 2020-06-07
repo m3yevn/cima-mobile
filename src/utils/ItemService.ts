@@ -60,7 +60,15 @@ export const getTestItems = async () => {
 
 export const deleteItem = (id: string, imageName: string) => {
   return new Promise(async (resolve, reject) => {
-    await storage().ref(imageName).delete();
+    storage()
+      .ref(imageName)
+      .delete()
+      .catch((ex) => {
+        Store.dispatch({
+          type: GLOBAL_ERROR,
+          payload: new GlobalError(500, "Storage Delete Failed",ex.message),
+        });
+      });
     firestore()
       .collection("ITEM_RECORDS")
       .doc(id)
