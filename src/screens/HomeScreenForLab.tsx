@@ -5,21 +5,40 @@ import { Card, Spinner, List, Button, Icon } from "@ui-kitten/components";
 import { View, Image, Text } from "react-native";
 import { Header } from "../components/Header";
 import { MainTheme } from "../theme";
+import { useSelector } from "../utils/redux/Store";
 
 export const LabHomeScreen = ({ navigation }: any) => {
+  const success = useSelector((state) => state.globalSuccess.name);
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleOnRefresh = () => {
+    setLoading(true);
+    getTestItems()
+      .then((result) => {
+        setItems(result);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   useEffect(() => {
     setLoading(true);
     getTestItems()
-    .then((result) => {
-      setItems(result);
-    })
-    .finally(() => {
-      setLoading(false);
+      .then((result) => {
+        setItems(result);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [success]);
+
+  const handleItemDetail = (item: Item) => {
+    navigation.navigate("ItemDetailScreenForLab", {
+      item,
     });
-  }, []);
+  };
 
   interface IRenderItem {
     item: Item;
@@ -27,7 +46,7 @@ export const LabHomeScreen = ({ navigation }: any) => {
   }
 
   const renderItem = ({ item, index }: IRenderItem) => (
-    <Card>
+    <Card onPress={() => handleItemDetail(item)}>
       <View style={{ flexDirection: "row" }}>
         <View style={{ paddingHorizontal: 10 }}>
           <Image
@@ -69,7 +88,7 @@ export const LabHomeScreen = ({ navigation }: any) => {
 
   return (
     <>
-      <Header title="Home" />
+      <Header refresh onRefresh={handleOnRefresh} title="Home" />
       <View style={{ minHeight: "86%", ...MainTheme.LayoutTheme.container }}>
         {loading && <Spinner size="giant" />}
         {!loading && (

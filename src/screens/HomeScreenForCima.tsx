@@ -13,6 +13,17 @@ export const CimaHomeScreen = ({ navigation }: any) => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const handleOnRefresh = () => {
+    setLoading(true);
+    getItems()
+      .then((result) => {
+        setItems(result);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
   useEffect(() => {
     setLoading(true);
     getItems()
@@ -111,7 +122,7 @@ export const CimaHomeScreen = ({ navigation }: any) => {
 
   return (
     <>
-      <Header title="Home" />
+      <Header refresh onRefresh={handleOnRefresh} title="Home" />
       <View style={{ minHeight: "86%", ...MainTheme.LayoutTheme.container }}>
         {loading && <Spinner size="giant" />}
         {!loading && (

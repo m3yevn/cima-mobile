@@ -6,7 +6,24 @@ import { GLOBAL_ERROR, GLOBAL_SUCCESS } from "./redux/actions/Types";
 import { GlobalError } from "../models/Error";
 import { GlobalSuccess } from "../models/Success";
 
-export const itemCollection = firestore().collection("ITEM_RECORDS");
+export const saveItems = async (item: Item) => {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection("ITEM_RECORDS")
+      .doc(item.id)
+      .set(item)
+      .then(() => {
+        Store.dispatch({
+          type: GLOBAL_SUCCESS,
+          payload: new GlobalSuccess(200, "Success", "Item is updated"),
+        });
+        resolve();
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+};
 
 export const getItems = async () => {
   const itemRecords = await firestore().collection("ITEM_RECORDS").get();
@@ -26,6 +43,7 @@ export const getTestItems = async () => {
     .collection("ITEM_RECORDS")
     .where("test", "==", true)
     .where("shape", "==", "cube")
+    .where("testStatus", "==", null)
     .get();
   const items: any[] = [];
   itemRecords.docs.forEach((doc) => {

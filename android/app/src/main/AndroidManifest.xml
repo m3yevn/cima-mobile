@@ -29,11 +29,11 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-        <intent-filter android:label="Penta Ocean">
+        <intent-filter android:label="CIMA">
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="https" android:host="Penta Ocean.now.sh" /> // A
+          <data android:scheme="https" android:host="CIMA.now.sh" /> // A
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

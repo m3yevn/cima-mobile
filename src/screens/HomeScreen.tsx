@@ -13,16 +13,19 @@ export const HomeScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     getRole(currentUser()?.uid as string).then((result) => {
+      if (result !== UserLoginType.Cima && result !== UserLoginType.Lab) {
+        signOut();
+      }
       setRole(result);
     });
   }, []);
 
-  switch (role) {
-    case UserLoginType.Cima:
-      return <CimaHomeScreen navigation={navigation} />;
-    case UserLoginType.Lab:
-      return <LabHomeScreen navigation={navigation} />;
-    default:
-      return <></>;
-  }
+  return (
+    <>
+      {role === UserLoginType.Cima && (
+        <CimaHomeScreen navigation={navigation} />
+      )}
+      {role === UserLoginType.Lab && <LabHomeScreen navigation={navigation} />}
+    </>
+  );
 };

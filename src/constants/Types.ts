@@ -4,6 +4,6 @@ export enum UserReducerType {
 }
 
 export enum UserLoginType {
-  Cima = "PENTA_SUPERVISOR",
-  Lab = "MXY_SUPERVISOR",
+  Cima = "CIMA_SUPERVISOR",
+  Lab = "LAB_SUPERVISOR",
 }

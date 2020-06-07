@@ -15,6 +15,8 @@ import { useSelector, Store } from "./src/utils/redux/Store";
 import { SuccessModalInjector } from "./src/components/ModalSuccess";
 import { ErrorModalInjector } from "./src/components/ModalError";
 import { Provider } from "react-redux";
+import { ItemDetailScreenForLab } from "./src/screens/ItemDetailScreenForLab";
+import { ItemDetailScreenForCima } from "./src/screens/ItemDetailScreenForCima";
 
 const Stack = createStackNavigator();
 
@@ -52,6 +54,14 @@ function RootStack() {
               <>
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="AddItem" component={AddItemScreen} />
+                <Stack.Screen
+                  name="ItemDetailScreenForLab"
+                  component={ItemDetailScreenForLab}
+                />
+                <Stack.Screen
+                  name="ItemDetailScreenForCima"
+                  component={ItemDetailScreenForCima}
+                />
               </>
             )}
             {!isAuthenticated && (

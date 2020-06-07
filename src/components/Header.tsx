@@ -3,7 +3,13 @@ import { View, Text } from "react-native";
 import { Button, Icon } from "@ui-kitten/components";
 import { signOut } from "../utils/AuthService";
 
-export const Header = ({ title, back, navigation }: any) => {
+export const Header = ({
+  title,
+  back,
+  navigation,
+  refresh,
+  onRefresh,
+}: any) => {
   const backToPrevious = () => {
     navigation.navigate("Home");
   };
@@ -18,6 +24,18 @@ export const Header = ({ title, back, navigation }: any) => {
         height: 50,
       }}
     >
+      {!!refresh && (
+        <View style={{ left: 5, position: "absolute" }}>
+          <Button
+            onPress={() => onRefresh()}
+            accessoryRight={(props) => (
+              <Icon width={20} height={20} {...props} name="refresh" />
+            )}
+          >
+            {}
+          </Button>
+        </View>
+      )}
       {!!back && (
         <View style={{ left: 5, position: "absolute" }}>
           <Button

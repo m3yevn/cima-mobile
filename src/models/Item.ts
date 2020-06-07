@@ -13,4 +13,5 @@ export interface Item {
   shape: string;
   date: string;
   createDate: FirebaseFirestoreTypes.Timestamp;
+  result: number;
 }

@@ -28,7 +28,7 @@ Trace:
 
 npm manifest: 
   {
-    "name": "Penta Ocean-mobile",
+    "name": "CIMA-mobile",
     "version": "0.0.1",
     "private": true,
     "scripts": {
