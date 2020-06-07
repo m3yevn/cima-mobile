@@ -117,6 +117,7 @@ export const CimaHomeScreen = ({ navigation }: any) => {
           status="success"
           style={{ height: 126, width: "50%" }}
           accessoryRight={(props) => <Icon {...props} name="edit" />}
+          onPress={() => handleItemDetail(item)}
         >
           Edit this?
         </Button>
