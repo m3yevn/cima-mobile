@@ -1,4 +1,5 @@
 # 🚧 CIMA Mobile
+by m3yevn and team
 
 #### ✅ The requirement for this project:
  - Supplier “WSR” delivers steel components. The components in shape of cube, cone or spherical.
